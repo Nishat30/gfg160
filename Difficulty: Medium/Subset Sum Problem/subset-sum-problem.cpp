@@ -22,25 +22,27 @@ class Solution {
     }
     bool isSubsetSum(vector<int>& arr, int target) {
         int n=arr.size();
-        vector<vector<bool>> dp(n, vector<bool>(target + 1, false));
+        // vector<vector<bool>> dp(n, vector<bool>(target + 1, false));
+        vector<bool> prev(target + 1, false);
         // return solve(n,arr,target,dp);
-        for(int i=0;i<n;i++){
-            dp[i][0]=1;
-        }
+        prev[0]=true;
         if (arr[0] <= target) {
-           dp[0][arr[0]] = true;
+           prev[arr[0]] = true;
         }
         for(int i=1;i<n;i++){
+            vector<bool>curr(target+1,0);
+            curr[0]=true;
             for(int j=1;j<=target;j++){
-                bool not_take=dp[i-1][j];
+                bool not_take=prev[j];
                 bool take=false;
                 if(j>=arr[i]){
-                   take=dp[i-1][j-arr[i]];
+                   take=prev[j-arr[i]];
                 }
-                dp[i][j]=take or not_take;
+                curr[j]=take or not_take;
             }
+            prev=curr;
         }
-        return dp[n-1][target];
+        return prev[target];
     }
 };
 
