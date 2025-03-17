@@ -6,43 +6,41 @@ using namespace std;
 
 // } Driver Code Ends
 
-// User function template for C++
-
 class Solution {
   public:
-    bool solve(int i,vector<int>& arr,int target,vector<vector<int>> dp){
-        if(target==0){return true;}
-        if(i==0){return arr[i]==target;}
-        if(dp[i][target]!=-1)return dp[i][target];
-        bool not_take=solve(i-1,arr,target,dp);
-        bool take=false;
-        if(target>=arr[i]){
-            take=solve(i-1,arr,target-arr[i],dp);}
-        return dp[i][target]=take or not_take; 
+    bool solve(int idx,vector<int>& arr, int sum,vector<vector<bool>>& dp){
+        if(sum==0) return true;
+        if(idx==0){return arr[idx]==sum;}
+        if(dp[idx][sum]!=false) return dp[idx][sum];
+        bool not_take=solve(idx-1,arr,sum,dp);
+        bool take=0;
+        if(arr[idx]<=sum){
+            take=solve(idx-1,arr,sum-arr[idx],dp);
+        }
+        return dp[idx][sum]=take or not_take;
     }
-    bool isSubsetSum(vector<int>& arr, int target) {
+    bool isSubsetSum(vector<int>& arr, int sum) {
+        // code here
         int n=arr.size();
-        // vector<vector<bool>> dp(n, vector<bool>(target + 1, false));
-        vector<bool> prev(target + 1, false);
-        // return solve(n,arr,target,dp);
-        prev[0]=true;
-        if (arr[0] <= target) {
-           prev[arr[0]] = true;
+        vector<vector<bool>> dp(n,vector<bool>(sum+1,false));
+        // return solve(n-1,arr,sum,dp);
+        for(int i=0;i<n;i++){
+            dp[i][0]=true;
+        }
+        if (arr[0] <= sum) {
+           dp[0][arr[0]] = true;
         }
         for(int i=1;i<n;i++){
-            vector<bool>curr(target+1,0);
-            curr[0]=true;
-            for(int j=1;j<=target;j++){
-                bool not_take=prev[j];
-                bool take=false;
-                if(j>=arr[i]){
-                   take=prev[j-arr[i]];
+            for(int j=1;j<=sum;j++){
+                bool not_take=dp[i-1][j];
+                bool take=0;
+                if(arr[i]<=j){
+                    take=dp[i-1][j-arr[i]];
                 }
-                curr[j]=take or not_take;
+                dp[i][j]=take or not_take;
             }
-            prev=curr;
         }
-        return prev[target];
+        return dp[n-1][sum];
     }
 };
 
