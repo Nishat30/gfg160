@@ -8,34 +8,29 @@ using namespace std;
 class Solution {
   public:
     // Function to return list containing vertices in Topological order.
-    vector<int> topologicalSort(vector<vector<int>>& adj) {
-        int V = adj.size();
-        vector<int> indegree(V, 0); 
-    
-  
-        for (int u = 0; u < V; u++) {
-            for (int &v : adj[u]) {
-                indegree[v]++; 
+    void dfs(int node,unordered_map<int,bool>& visited,stack<int>&s,vector<vector<int>>& adj){
+        visited[node]=1;
+        for(auto i: adj[node]){
+            if(!visited[i]){
+                dfs(i,visited,s,adj);
             }
-        } 
-        queue<int> q;
+        }
+        s.push(node);
+    }
+    vector<int> topologicalSort(vector<vector<int>>& adj) {
+        // Your code here
         int n=adj.size();
-        for(int i=0;i<V;i++){
-            if(indegree[i]==0){
-                q.push(i);
+        unordered_map<int,bool> visited;
+        stack<int>s;
+        for(int i=0;i<n;i++){
+            if(!visited[i]){
+                dfs(i,visited,s,adj);
             }
         }
         vector<int> ans;
-        while(!q.empty()){
-            int i=q.front();
-            q.pop();
-            ans.push_back(i);
-            for(auto& idx:adj[i]){
-                indegree[idx]--;
-                if(indegree[idx]==0){
-                    q.push(idx);
-                }
-            }
+        while(!s.empty()){
+            ans.push_back(s.top());
+            s.pop();
         }
         return ans;
     }
