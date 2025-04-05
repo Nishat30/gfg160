@@ -7,7 +7,6 @@ using namespace std;
 
 class Solution {
   public:
-    // Function to return list containing vertices in Topological order.
     void dfs(int node,unordered_map<int,bool>& visited,stack<int>&s,vector<vector<int>>& adj){
         visited[node]=1;
         for(auto i: adj[node]){
@@ -17,8 +16,12 @@ class Solution {
         }
         s.push(node);
     }
-    vector<int> topologicalSort(vector<vector<int>>& adj) {
-        // Your code here
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<vector<int>> adj(V);
+        for(auto&a:edges){
+            adj[a[0]].push_back(a[1]);
+        }
         int n=adj.size();
         unordered_map<int,bool> visited;
         stack<int>s;
@@ -39,12 +42,6 @@ class Solution {
 
 //{ Driver Code Starts.
 
-/*  Function to check if elements returned by user
- *   contains the elements in topological sorted form
- *   V: number of vertices
- *   *res: array containing elements in topological sorted form
- *   adj[]: graph input
- */
 int check(int V, vector<int> &res, vector<vector<int>> adj) {
 
     if (V != res.size())
@@ -67,23 +64,26 @@ int main() {
     int T;
     cin >> T;
     while (T--) {
-        int N, E;
-        cin >> N >> E;
-        int u, v;
+        int V, E;
+        cin >> V >> E;
 
-        vector<vector<int>> adj(N);
+        vector<vector<int>> adj(V);
+        vector<vector<int>> edges;
 
         for (int i = 0; i < E; i++) {
             int u, v;
             cin >> u >> v;
             adj[u].push_back(v);
+            edges.push_back({u, v});
         }
 
         Solution obj;
-        vector<int> res = obj.topologicalSort(adj);
-
-        cout << check(N, res, adj) << endl;
-
+        vector<int> res = obj.topoSort(V, edges);
+        bool ans = check(V, res, adj);
+        if (ans)
+            cout << "true\n";
+        else
+            cout << "false\n";
         cout << "~"
              << "\n";
     }
