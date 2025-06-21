@@ -1,59 +1,32 @@
-//{ Driver Code Starts
-//Initial Template for C++
-
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-
-//User function Template for C++
-
-class Solution{
-    public:
-    int dfs(int idx,char arr[], int n, int k,vector<bool>& visited){
-        if (idx >= n) return 0;
-        if (visited[idx]) return dfs(idx + 1, arr, n, k, visited);
+class Solution {
+  public:
+    int catchThieves(vector<char> &arr, int k) {
+        // Code here
+        vector<int>p, t;
+        for(int i=0; i<arr.size(); i++){
+            if(arr[i] == 'P') p.push_back(i);
+            else t.push_back(i);
+        }
         
-        if (arr[idx] == 'P') {
-            for (int i = max(0, idx - k); i <= min(n - 1, idx + k); i++) {
-                if (arr[i] == 'T' && !visited[i]) {
-                    visited[i] = true;
-                    visited[idx] = true;
-                    return 1 + dfs(idx + 1, arr, n, k, visited);
+        int ans  = 0;
+        int st = 0;
+        for(int i=0; i<t.size(); i++){
+            while(st < p.size()){
+                int low = t[i] - k;
+                int high = t[i] + k;
+                if(p[st] <= high && p[st] >= low){
+                    ans++;
+                    st++;
+                    break;
+                }
+                else if(p[st] < low){
+                    st++;
+                }
+                else{
+                    break;
                 }
             }
         }
-        return dfs(idx + 1, arr, n, k, visited);
-    }
-    int catchThieves(char arr[], int n, int k) 
-    {
-        vector<bool> visited(n,false);
-        return dfs(0,arr,n,k,visited);
+        return ans;
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() 
-{ 
-	int t;
-	cin>>t;
-	while(t--)
-	{
-		int n, k;
-		cin>>n >> k;
-		char arr[n];
-		for (int i = 0; i < n; ++i)
-			cin>>arr[i];
-		Solution obj;
-		cout<<obj.catchThieves(arr, n, k) << endl;
-	
-cout << "~" << "\n";
-}
-	return 0; 
-} 
-
-
-// } Driver Code Ends
