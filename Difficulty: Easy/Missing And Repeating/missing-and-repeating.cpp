@@ -2,16 +2,22 @@ class Solution {
   public:
     vector<int> findTwoElement(vector<int>& arr) {
         // code here
-        int n = arr.size();  
-        vector<int> freq(n + 1, 0); 
-        int repeating = -1, missing = -1;
-        for(int i=0;i<n;i++){
-            freq[arr[i]]++;
+        int total_sum=0;
+        unordered_map<int,int> mp;
+        int sum=0;
+        for(int i:arr){
+            mp[i]++;
+            sum+=i;
         }
-        for(int i=1;i<=n;i++){
-            if(freq[i]==0)missing = i;
-            else if(freq[i]==2)repeating = i;
+        int repeat=0;
+        for(int i=1;i<=arr.size();i++){
+            if(mp[i]>1){
+                repeat=i;
+            }
+            total_sum+=i;
         }
-        return {repeating, missing};
+        sum=sum-repeat;
+        int miss=total_sum-sum;
+        return {repeat,miss};
     }
 };
