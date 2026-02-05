@@ -1,36 +1,22 @@
 class Solution {
   public:
-    // k is the maximum number of zeros allowed to flip
     int maxOnes(vector<int>& arr, int k) {
         // code here
-    int res = 0;
-
-    // Start and end pointer of the window 
-    int start = 0, end = 0; 
-    
-    // Counter to keep track of zeros in current window
-    int cnt = 0;
-    
-    while (end < arr.size()) {
-        if (arr[end] == 0)
-            cnt++;
+        int n = arr.size();
+        int last_zero = 0;
+        int current = 0;
+        int ans = 0;
         
-        // Shrink the window from left if number of 
-        // zeroes are greater than k
-        while (cnt > k) {
-            if (arr[start] == 0)
-                cnt--;
-                
-            start++;
+        for(int i=0;i<n;i++){
+            if(arr[i] == 0)current ++;
+            if(current > k){
+                while(arr[last_zero] != 0)last_zero ++;
+                last_zero++;
+                current--;
+            }
+                ans = max(ans,i-last_zero+1);
         }
-        
-        res = max(res, (end - start + 1));
-        
-        // Increment end pointer to expand the window
-        end++; 
-    }
-    
-    return res; 
+        ans = max(ans,n-last_zero);
+        return ans;
     }
 };
-
