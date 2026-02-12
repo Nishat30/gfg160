@@ -1,46 +1,46 @@
 class Solution {
   public:
-    int maxMinHeight(vector<int> &a, int k, int w) {
-        int n=a.size();
+    int maxMinHeight(vector<int> &arr, int k, int w) {
         // code here
-        int mn = *min_element(a.begin(), a.end());
-            int mx = mn + k + 1;
+         int n = arr.size(), lo = 1e9;
+        for(auto &e: arr) lo = min(lo, e);
+        
+        int hi = lo + k, res = -1;
+        
+        
+        auto check = [&](int minHeight) -> bool {
+            int reqk = 0;
             
-            auto f = [&] (int ht) {
-                int days = 0, curr_ht = a[0];
-                vector <int> flower(n + 1);
+            vector<int>pre(n, 0);
+            
+            for(int i=0; i<n; i++)
+            {
+                if(i) pre[i] += pre[i-1];
+                int curr = arr[i] + pre[i];
                 
-                int diff = max(0, ht - curr_ht);
                 
-                flower[0] += diff;
-                days += diff;
-                flower[w] -= diff;
-                
-                for(int i = 1; i < n; i++) {
-                    flower[i] += flower[i - 1];
+                if(curr < minHeight)
+                {
+                    int extra = minHeight - curr;
                     
-                    int curr_ht = a[i] + flower[i];
-                    
-                    diff = max(0, ht - curr_ht);
-                    flower[i] += diff;
-                    days += diff;
-                    
-                    if(i + w < n) {
-                        flower[i + w] -= diff;
-                    }
+                    pre[i] += extra; reqk += extra;
+                    if(i + w<= n-1) pre[i + w] -= extra;
                 }
-                
-                return days <= k;
-            };
-            
-            while(mn < mx) {
-                int ht = (mn + mx) / 2;
-                if(!f(ht)) 
-                    mx = ht;
-                else 
-                    mn = ht + 1;
             }
             
-            return mn - 1;
+            return reqk <= k;
+        };
+        
+        while(lo <= hi)
+        {
+            int mid = lo + (hi - lo) / 2;
+            
+            if(check(mid))
+            {
+                res = mid;
+                lo = mid + 1;
+            }else hi = mid - 1;
         }
+        return res;
+    }
 };
