@@ -1,42 +1,36 @@
 class Solution {
   public:
-    string smallestWindow(string &s, string &p) {
-        // code here
-         if (s.empty() || p.empty() || p.size() > s.size()) return "";
-
-    // Frequency of characters in p
-    unordered_map<char, int> need;
-    for (char c : p) need[c]++;
-
-    unordered_map<char, int> have;
-    int required = need.size();   // number of unique chars needed
-    int formed = 0;               // number of chars meeting requirement
-
-    int left = 0, right = 0;
-    int minLen = INT_MAX, start = 0;
-
-    for (right = 0; right < s.size(); right++) {
-        char c = s[right];
-        have[c]++;
-
-        if (need.count(c) && have[c] == need[c])
-            formed++;
-
-        // Try to shrink from left
-        while (left <= right && formed == required) {
-            if (right - left + 1 < minLen) {
-                minLen = right - left + 1;
-                start = left;
-            }
-
-            char d = s[left];
-            have[d]--;
-            if (need.count(d) && have[d] < need[d])
-                formed--;
-            left++;
-        }
+    bool check(unordered_map<int,int>&ms,unordered_map<int,int>&mp){
+       if(ms.size()<mp.size())
+       return false;
+       for(auto it:mp){
+           if(it.second>ms[it.first])
+           return false;
+       }
+       return true;
     }
-
-    return minLen == INT_MAX ? "" : s.substr(start, minLen);
+    string minWindow(string &s, string &p) {
+        // code here
+        unordered_map<int,int>mp;
+        for(auto it:p)
+        mp[it]++;
+        
+        string ans="";
+        int i=0;
+        int j=0;
+        unordered_map<int,int>ms;
+        while(i<s.size() && j<s.size()){
+            ms[s[j]]++;
+            while(check(ms,mp) && i<s.size()){
+                if(ans=="" || ans.size()>j-i+1)
+                ans=s.substr(i,j-i+1);
+                ms[s[i]]--;
+                if(ms[s[i]]==0)
+                ms.erase(s[i]);
+                i++;
+            }
+            j++;
+        }
+        return ans;
     }
 };
