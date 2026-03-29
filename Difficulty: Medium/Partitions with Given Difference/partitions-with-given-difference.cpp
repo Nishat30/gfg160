@@ -1,11 +1,3 @@
-//{ Driver Code Starts
-// Initial function template for C++
-
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
 
 class Solution {
   public:
@@ -25,9 +17,41 @@ class Solution {
     }
     int perfectSum(vector<int>& arr, int target) {
         // code here
+        //tabulation
         int n=arr.size();
-        vector<vector<int>> dp(n,vector<int> (target+1,-1));
-        return solve(n-1,target,dp,arr);
+        // vector<vector<int>> dp(n,vector<int> (target+1,0));
+        // if(arr[0]==0) dp[0][0]=2;
+        // else dp[0][0]=1;
+        // //num[0]=0
+        // if(arr[0]!=0 && arr[0]<=target) dp[0][arr[0]]=1;
+        // for(int idx=1;idx<n;idx++){
+        //     for(int sum=0;sum<=target;sum++){
+        //         int not_take=dp[idx-1][sum];
+        //         int take=0;
+        //         if(arr[idx]<=sum){
+        //           take=dp[idx-1][sum-arr[idx]];}
+        //         dp[idx][sum]=(take+not_take)%mod;
+        //     }
+        // }
+        // return dp[n-1][target];
+        
+        //space optimisation
+        vector<int> prev(target+1,0), curr(target+1,0);
+        if(arr[0]==0) prev[0]=2;
+        else prev[0]=1;
+        //num[0]=0
+        if(arr[0]!=0 && arr[0]<=target) prev[arr[0]]=1;
+        for(int idx=1;idx<n;idx++){
+            for(int sum=0;sum<=target;sum++){
+                int not_take=prev[sum];
+                int take=0;
+                if(arr[idx]<=sum){
+                  take=prev[sum-arr[idx]];}
+                curr[sum]=(take+not_take)%mod;
+            }
+            prev=curr;
+        }
+        return prev[target];
     }
     int countPartitions(vector<int>& arr, int d) {
         // Code here
@@ -39,39 +63,3 @@ class Solution {
     }
 };
 
-
-//{ Driver Code Starts.
-
-int main() {
-    int test_case;
-    cin >> test_case;
-    cin.ignore();
-    while (test_case--) {
-
-        int d;
-        vector<int> arr, brr, crr;
-        string input;
-        getline(cin, input);
-        stringstream ss(input);
-        int number;
-        while (ss >> number) {
-            arr.push_back(number);
-        }
-        getline(cin, input);
-        ss.clear();
-        ss.str(input);
-        while (ss >> number) {
-            crr.push_back(number);
-        }
-        d = crr[0];
-        int n = arr.size();
-        Solution ob;
-        int ans = ob.countPartitions(arr, d);
-        cout << ans << endl;
-
-        cout << "~"
-             << "\n";
-    }
-    return 0;
-}
-// } Driver Code Ends
